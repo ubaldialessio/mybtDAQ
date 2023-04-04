@@ -1195,7 +1195,7 @@ namespace {
     };
     static const char* includePaths[] = {
 "/home/alessio/root/include/",
-"/home/alessio/ams/repo/btdaq/trunkBT/Decode/",
+"/home/alessio/ams/repo/mybtDAQ/Decode/",
 0
     };
     static const char* fwdDeclCode = R"DICTFWDDCLS(
