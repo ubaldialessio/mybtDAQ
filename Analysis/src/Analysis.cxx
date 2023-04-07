@@ -70,7 +70,7 @@ const Int_t size = 6;
 TGraphErrors *va[9];
 Cluster *cTTree;
 const int splitLevel = 99;
-TTree t1("t1","clusters from the night acquisition");
+TTree t1("t1","clusters");
 
 
 //----------------------------------------
@@ -177,10 +177,13 @@ template <class Event, class RH> int ProcessChain(TChain *chain, TString output_
 
   TFile *foutput = new TFile(output_filename.Data(), "RECREATE");
   //new
-  TString cluster_output = output_filename;
-  TString init = "/home/alessio/ams/cluster/";
-  cluster_output.Replace(0,27,init,26);
-  TFile ftree(cluster_output,"recreate");
+  TString path1 = "/home/alessio/ams/cluster/"; //path to save the clusters manually changeable
+  std::size_t start = output_filename.Last('/')+1; //find the last '/' from the input /../.../.root
+  std::size_t end = output_filename.Last('t'); //find the last 't' fomr the input /.../.../.root (t of root)
+  TString name = ( output_filename(start,end) ); //take the name
+  TString clus = path1.Append("clusters_");
+  TString cluster_output = clus.Append(name); //append the name to the path
+  TFile *ftree = new TFile(cluster_output.Data(),"RECREATE");
   foutput->cd();
   //test
 
@@ -403,9 +406,8 @@ template <class Event, class RH> int ProcessChain(TChain *chain, TString output_
   foutput->Close();
 
   //new
-  ftree.cd();
+  ftree->cd();
   t1.Write();
-  ftree.Close();
 
   return 0;
 }
@@ -480,9 +482,9 @@ template <class Event, class RH> void BookHistos(TObjArray *histos, Long64_t ent
   histos->Add(hlength);
   TH1F *hcog = new TH1F("hcog", "hcog; Cog; Entries",1024,0,1024);
   histos->Add(hcog);
-  TH1F *hTotSigCorr = new TH1F("hTotSigCorr","hTotSigCorr; TotSigCorr; Entries",5000,0,300);
+  TH1F *hTotSigCorr = new TH1F("hTotSigCorr","hTotSigCorr; TotSigCorr; Entries",5000,0,1000);
   histos->Add(hTotSigCorr);
-  TH1F *hTotSig = new TH1F("hTotSig","hTotSig; TotSig; Entries",5000,0,20000);
+  TH1F *hTotSig = new TH1F("hTotSig","hTotSig; TotSig; Entries",5000,0,1000);
   histos->Add(hTotSig);
   TH1F *hTotSigMaxCl = new TH1F("hTotSigMaxCl","hTotSigMaxCl; TotSig; Entries",2000,0,10000);
   histos->Add(hTotSigMaxCl);
